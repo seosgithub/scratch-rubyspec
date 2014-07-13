@@ -4,4 +4,5 @@ Scratch is a ruby language implementation test framework based on RubySpec.  Scr
 
 Scratch was purpose built for [Jewel](https://github.com/sotownsend/Jewel)
 
-[![Build Status](https://travis-ci.org/rubyspec/rubyspec.png)](https://travis-ci.org/rubyspec/rubyspec)
+# How to run #
+    >./run

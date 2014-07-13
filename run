@@ -8,8 +8,8 @@ if ARGV[0].nil?
 end
 
 @test_count = 0
+@fails = 0
 def check msg
-  @test_count += 1
   info = yield
 
   #CALL EXTERNAL
@@ -60,8 +60,10 @@ def check msg
       $stderr.puts info[:code]
       $stderr.puts "======================================================="
       $stderr.puts "\n"
-      exit
+      #exit
+      @fails += 1
     else
+      @test_count += 1
     end
   end
 
@@ -75,8 +77,7 @@ SPECS.each do |spec|
   $stderr.puts "Running [#{spec}]"
   `./bin/convert #{spec}`
   load "./tmp/#{spec.gsub("/", "_")}"
-  $stderr.puts "\nOk! Passed #{@test_count} tests"
+  $stderr.puts "\nOk! Passed #{@test_count}, failed #{@fails}"
   $stderr.puts "===================================="
 end
 $stderr.puts "\n"
-

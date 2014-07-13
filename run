@@ -1,0 +1,66 @@
+#!/usr/bin/env ruby
+
+if ARGV[0].nil?
+  puts "Please pass a ruby interpreter that can be tested and supports recieving code via -e"
+  exit
+end
+
+def check msg
+  $stderr.printf "."
+  info = yield
+
+  #CALL EXTERNAL
+  ###################################
+  call = "#{ARGV[0]} -e '#{info[:code]}' > /tmp/output"
+  `#{call}`
+  ###################################
+
+  call_results = File.read("/tmp/output").split("\n")
+  #$stderr.puts call_results.inspect
+
+  info[:results].each_with_index do |result, index|
+    exp = nil
+    case result
+    when "be_nil"
+      exp = -> (x) { x == "nil" }
+    when "== nil"
+      exp = -> (x) { x == "nil" }
+    when "== false"
+      exp = -> (x) { x == "false" }
+    when "== 1"
+      exp = -> (x) { x == "1" }
+    when "== 2"
+      exp = -> (x) { x == "2" }
+
+    when "== \"yes\""
+      exp = -> (x) { x == "\"yes\"" }
+    else
+      raise "Unknown when test: #{result.inspect}"
+    end
+
+    if exp
+      info[:results][index] = exp.call(call_results[index])
+    end
+  end
+
+  #outcome = info[:results].reduce(true) {|s, e| s and e}
+  info[:results].each_with_index do |result, index|
+    if result == false
+      $stderr.puts "\n\n"
+      $stderr.puts "======================================================="
+      $stderr.puts "Failed: #{msg}"
+      $stderr.puts "Check #{index}"
+      $stderr.puts "-------------------------------------------------------"
+      $stderr.puts info[:code]
+      $stderr.puts "======================================================="
+      $stderr.puts "\n"
+      exit
+    end
+  end
+end
+
+
+#and_spec = File.open("and_spec.rb")
+load './and_spec.rb'
+$stderr.puts "\n"
+

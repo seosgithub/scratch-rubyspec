@@ -22,7 +22,7 @@ and_spec.scan(regex).each do |groups|
   results = results.map{|e| e[1]}
   #$stderr.puts results.inspect
 
-  groups[1].gsub!(/\s*(.*)\.should.*/, "\n" 'puts \1.inspect')
+  groups[1].gsub!(/\s*(.*)\.should.*/, "\n" 'puts (\1.inspect)')
   
   #if should_matches[1]
     #require 'pry'; binding.pry

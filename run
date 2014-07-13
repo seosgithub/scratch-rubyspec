@@ -10,7 +10,6 @@ end
 @test_count = 0
 def check msg
   @test_count += 1
-  $stderr.printf "."
   info = yield
 
   #CALL EXTERNAL
@@ -21,6 +20,8 @@ def check msg
 
   call_results = File.read("/tmp/output").split("\n")
   #$stderr.puts call_results.inspect
+  
+  results_clone = info[:results].dup
 
   info[:results].each_with_index do |result, index|
     exp = nil
@@ -54,13 +55,17 @@ def check msg
       $stderr.puts "======================================================="
       $stderr.puts "Failed: #{msg}"
       $stderr.puts "Check #{index}"
+      $stderr.puts "Check #{results_clone[index]}"
       $stderr.puts "-------------------------------------------------------"
       $stderr.puts info[:code]
       $stderr.puts "======================================================="
       $stderr.puts "\n"
       exit
+    else
     end
   end
+
+  $stderr.puts "+Passed [#{msg}]"
 end
 
 

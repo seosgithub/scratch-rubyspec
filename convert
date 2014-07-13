@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+
+Dir.chdir(File.dirname(__FILE__))
+Dir.chdir("rubyspec/language/")
+
+and_spec = File.read("and_spec.rb")
+regex = /it "(.*?)" do(?:\s*(.*?))end/m
+
+outfile = ""
+
+and_spec.scan(regex).each do |groups|
+  outfile << "check '#{groups[0]}' do\n"
+    outfile << groups[1] << "\n"
+  outfile << "end\n\n"
+end
+
+Dir.chdir("../../")
+File.write "and_spec.rb", outfile

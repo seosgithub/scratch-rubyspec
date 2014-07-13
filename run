@@ -1,11 +1,15 @@
 #!/usr/bin/env ruby
 
+SPECS = ["language/and_spec.rb"]
+
 if ARGV[0].nil?
   puts "Please pass a ruby interpreter that can be tested and supports recieving code via -e"
   exit
 end
 
+@test_count = 0
 def check msg
+  @test_count += 1
   $stderr.printf "."
   info = yield
 
@@ -61,6 +65,13 @@ end
 
 
 #and_spec = File.open("and_spec.rb")
-load './and_spec.rb'
+SPECS.each do |spec|
+  $stderr.puts "===================================="
+  $stderr.puts "Running [#{spec}]"
+  `./bin/convert #{spec}`
+  load "./tmp/#{spec.gsub("/", "_")}"
+  $stderr.puts "\nOk! Passed #{@test_count} tests"
+  $stderr.puts "===================================="
+end
 $stderr.puts "\n"
 

@@ -1,9 +1,17 @@
 #!/usr/bin/env ruby
 
-Dir.chdir(File.dirname(__FILE__))
-Dir.chdir("rubyspec/language/")
+file_name = ARGV[0]
+if file_name.nil?
+  puts "Please pass a ruby spec file path like language/and_spec.rb"
+  exit
+end
+path = file_name.split("/")[0]
+file = file_name.split("/")[1]
 
-and_spec = File.read("and_spec.rb")
+Dir.chdir(File.dirname(__FILE__))
+Dir.chdir("../rubyspec/#{path}/")
+
+and_spec = File.read(file)
 regex = /it "(.*?)" do(?:\s*(.*?))end/m
 
 outfile = ""
@@ -40,7 +48,7 @@ end
 
 require 'fileutils'
 Dir.chdir("../../")
-FileUtils::mkdir_p("converted")
-File.open "converted/and_spec.rb", "w+" do |file|
+FileUtils::mkdir_p("tmp")
+File.open "tmp/#{file_name.gsub("/", "_")}", "w+" do |file|
   file << outfile
 end
